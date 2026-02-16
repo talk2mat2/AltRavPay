@@ -1,14 +1,10 @@
-
-import {
-  Box,
-  useBreakpointValue,
-  useColorMode,
-} from "@chakra-ui/react";
+import NavBar from "@/components/navbar";
+import { Box, useBreakpointValue, useColorMode } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
 
 const DefaultAdminLayout = () => {
   const { colorMode } = useColorMode();
-  const isDrawerOpenOnDesktop = useBreakpointValue({ base: false, md: true });
+  const isDrawerOpenOnDesktop = useBreakpointValue({ base: false, md: false });
   const isDarkMode = colorMode !== "light";
 
   return (
@@ -27,7 +23,6 @@ const DefaultAdminLayout = () => {
         height="100vh"
         w="100%"
       >
-        {/* Sticky/Fix Navbar */}
         <Box
           px={{ base: "1%", md: "1%" }}
           position="sticky"
@@ -35,9 +30,8 @@ const DefaultAdminLayout = () => {
           zIndex="10"
           bg={isDarkMode ? "navy.900" : "secondaryGray.200"}
         >
-          {/* <NavBar /> */}
+          <NavBar />
         </Box>
-
         {/* Scrollable Content Area */}
         <Box
           px={{ base: "1%", md: "1%" }}

@@ -240,7 +240,7 @@ const Login = () => {
                       </InputGroup>
                       {errors.passWord && touched.passWord ? (
                         <FormHelperText color="error.20">
-                          {/* {errors.passWord} */}gg
+                          {/* {errors.passWord} */}
                         </FormHelperText>
                       ) : null}
                       {!showTokenForm && (

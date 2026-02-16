@@ -19,4 +19,5 @@ export const api = {
   // },
 
   login: () => {},
+  logout: (item?:any) => {},
 };

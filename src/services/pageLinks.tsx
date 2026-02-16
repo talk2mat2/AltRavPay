@@ -1,6 +1,7 @@
 export class pageLinks {
   static readonly Dashboard = "/overView";
   static readonly Overview = "/overView";
+  static readonly Reports = "/reports";
   static readonly Request = "/request";
   static readonly Branch = "/branches";
   static readonly NewBranch = "/branch/new";

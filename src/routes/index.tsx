@@ -15,7 +15,6 @@ import {
   View_Only_User,
 } from "@/types/roles";
 
-
 // import { useTokenRefresher } from "@/hooks/useTokenRefresher";
 // import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { useCurrentUser } from "../hooks/useCurrentUser";
@@ -40,32 +39,7 @@ const AppRoutes = () => {
   const renderRouteForRole = () => {
     if (!isLoggedIn) {
       return NonAuthRoute();
-    }
-
-    switch (role) {
-      // case IT_Control_Authorizer:
-      // case IT_Control_Initiator:
-      //   return ITControlRoute();
-      // case "VDOReviewer":
-      //   return VdoReviewRoute();
-      // case "VDOAuthorizer":
-      //   return VdoAithorizerRoute();
-      // case "BDOReviewer":
-      //   return BdoReviewRoute();
-      // case "CAMUReviewer":
-      //   return CAMUReviewRoute();
-      // case "ViewOnly":
-      //   return ViewOnlyRoute();
-      // case "CAMUAuthorizer":
-      //   return CAMUAuthRoute();
-      // case "BDOAuthorizer":
-      //   return BdoAuthorizerRoute();
-      default:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return adminRoles.includes(role ?? ("" as any))
-          ? DefaultAdminRoute()
-          : NonAuthRoute();
-    }
+    } else return DefaultAdminRoute();
   };
 
   return (
