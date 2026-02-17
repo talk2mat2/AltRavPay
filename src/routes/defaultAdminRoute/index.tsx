@@ -1,4 +1,5 @@
 import DefaultAdminLayout from "@/layouts/defaultLayout";
+import DataCapture from "@/pages/dataCapture";
 import GenerateWebGuid from "@/pages/guiid";
 import { pageLinks } from "@services/pageLinks";
 import React from "react";
@@ -16,6 +17,7 @@ export function DefaultAdminRoute() {
 			<Route path="/" element={<DefaultAdminLayout />}>
 				<Route index element={<OverView />} />
 				<Route path={pageLinks.guid} element={<GenerateWebGuid />} />
+				<Route path={pageLinks.dataCapture} element={<DataCapture />} />
 				<Route path={pageLinks.Dashboard} element={<OverView />} />
 				<Route path={pageLinks.Reports} element={<Reports />} />
 				<Route path={pageLinks.UploadRequest} element={<UploadRequest />} />
