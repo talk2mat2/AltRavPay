@@ -14,6 +14,8 @@ import { useState } from "react";
 import AmountForm from "./amountForm";
 import Web_id from "./web_id";
 import Web_id_form from "./web_id_form";
+import Web_id_form2 from "./Web_id_form2";
+import Web_id_form3 from "./Web_id_form3";
 
 export default function GenerateWebGuid() {
   const [step, setStep] = useState(0);
@@ -90,6 +92,8 @@ export default function GenerateWebGuid() {
             {step == 1 && <AmountForm handleNext={handleNext} />}
             {step == 2 && <Web_id handleNext={handleNext} />}
             {step == 3 && <Web_id_form handleNext={handleNext} />}
+            {step == 4 && <Web_id_form2  handleNext={handleNext} />}
+            {step == 5 && <Web_id_form3  handleNext={handleNext} />}
           </VStack>
         </CardBody>
       </Card>
