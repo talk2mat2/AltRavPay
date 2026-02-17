@@ -13,8 +13,6 @@ export function NonAuthRoute() {
     <>
       <Route path={"/"} element={<Login />} />
       <Route path={"/login"} element={<Login />} />
-      <Route path={"/overview"} element={<OverView />} />
-      {/* <Route path={"/overview"} element={<UploadRequest />} /> */}
     </>
   );
 }
