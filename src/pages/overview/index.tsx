@@ -18,10 +18,12 @@ import Buttons from "@/components/buttons";
 import { BiBarChartAlt } from "react-icons/bi";
 import ReportForm from "@/components/reportForm";
 import { useNavigate } from "react-router-dom";
+import { pageLinks } from "@/services/pageLinks";
 
 const OverView = () => {
    const navigate = useNavigate()
   const showReportForm = true;
+
   return (
 		<Container maxW="container.xl" w="100%" px={{ base: 4, md: 6 }} py={8}>
 			<HStack
@@ -85,10 +87,12 @@ const OverView = () => {
 								<Text fontSize="28px" fontWeight="700" color="blue.500">
 									2345
 								</Text>
-
 								<Buttons
 									borderRadius="30px"
 									w="100%"
+									onClick={() => {
+										navigate(pageLinks.guid)
+									}}
 									maxW="194px"
 									h={"32px"}
 									mt={6}

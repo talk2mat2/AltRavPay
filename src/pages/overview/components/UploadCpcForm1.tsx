@@ -7,10 +7,29 @@ import {
 	RadioGroup,
 	Input,
 } from "@chakra-ui/react"
-import Buttons from "@/components/buttons" 
-import { useState } from "react"
+import Buttons from "@/components/buttons"
+import { useEffect, useState } from "react"
 
-const UploadCpcForm1 = () => {
+interface UploadCpcForm1Props {
+	onDataChange?: (data: {
+		requestCategory: "Reversal" | "Amendment"
+		type: "Customer error" | "Branch error"
+		entryNumber: string
+		reasonForRequest: string
+	}) => void
+	onNext: () => void
+	isDisabled: boolean
+}
+
+const UploadCpcForm1 = ({
+	onDataChange,
+	onNext,
+	isDisabled,
+}: UploadCpcForm1Props) => {
+	// ... your existing state ...
+
+	// Add this effect to notify parent of changes
+
 	const [requestCategory, setRequestCategory] = useState<
 		"Reversal" | "Amendment"
 	>("Reversal")
@@ -20,6 +39,15 @@ const UploadCpcForm1 = () => {
 	const [entryNumber, setEntryNumber] = useState("")
 	const [reasonForRequest, setReasonForRequest] = useState("")
 
+	useEffect(() => {
+		onDataChange?.({
+			requestCategory,
+			type,
+			entryNumber,
+			reasonForRequest,
+		})
+	}, [requestCategory, type, entryNumber, reasonForRequest, onDataChange])
+	
 	return (
 		<VStack spacing={3} align="stretch">
 			<FormControl>
@@ -133,7 +161,8 @@ const UploadCpcForm1 = () => {
 				fontSize="14px"
 				isDisabled={
 					!requestCategory || !type || !entryNumber.trim() || !reasonForRequest
-				}>
+				}
+				onClick={onNext}>
 				Proceed
 			</Buttons>
 		</VStack>

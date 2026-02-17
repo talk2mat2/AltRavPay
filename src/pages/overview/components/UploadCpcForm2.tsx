@@ -2,72 +2,92 @@ import { VStack, Box, HStack, Text, Icon, Button } from "@chakra-ui/react"
 import { FiUpload } from "react-icons/fi"
 import { FaFilePdf } from "react-icons/fa" // ✅ Proper PDF icon
 import Buttons from "@/components/buttons"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
-const UploadCpcForm2 = () => {
-	// Track arrays of filenames per section
-	const [files, setFiles] = useState({
-		letterhead: [] as string[],
-		receipt: [] as string[],
-		teller: [] as string[],
-	})
+interface UploadCpcForm2Props {
+	onDataChange?: (data: {
+		letterhead: string[]
+		receipt: string[]
+		teller: string[]
+	}) => void
+	onNext: () => void
+	isDisabled: boolean
+}
 
-	const fileInputRefs = {
-		letterhead: useRef<HTMLInputElement>(null),
-		receipt: useRef<HTMLInputElement>(null),
-		teller: useRef<HTMLInputElement>(null),
+
+const UploadCpcForm2 = ({ onDataChange, onNext, isDisabled }: UploadCpcForm2Props) => {
+
+// Track arrays of filenames per section
+const [files, setFiles] = useState({
+	letterhead: [] as string[],
+	receipt: [] as string[],
+	teller: [] as string[],
+})
+
+const fileInputRefs = {
+	letterhead: useRef<HTMLInputElement>(null),
+	receipt: useRef<HTMLInputElement>(null),
+	teller: useRef<HTMLInputElement>(null),
+}
+
+const handleFileSelect = (
+	field: keyof typeof files,
+	e: React.ChangeEvent<HTMLInputElement>,
+) => {
+	const selectedFiles = Array.from(e.target.files || [])
+	const pdfFiles = selectedFiles.filter((file) =>
+		file.name.toLowerCase().endsWith(".pdf"),
+)
+
+if (pdfFiles.length !== selectedFiles.length) {
+	alert("Only PDF files are allowed")
+}
+
+const newFilenames = pdfFiles.map((file) => file.name)
+
+// Prevent duplicate filenames in the same section
+setFiles((prev) => {
+	const existing = new Set(prev[field])
+	const uniqueNew = newFilenames.filter((name) => !existing.has(name))
+	return {
+		...prev,
+		[field]: [...prev[field], ...uniqueNew],
 	}
+})
 
-	const handleFileSelect = (
-		field: keyof typeof files,
-		e: React.ChangeEvent<HTMLInputElement>,
-	) => {
-		const selectedFiles = Array.from(e.target.files || [])
-		const pdfFiles = selectedFiles.filter((file) =>
-			file.name.toLowerCase().endsWith(".pdf"),
-		)
+// ✅ Reset input to allow re-selection
+if (e.target) {
+	e.target.value = ""
+}
+}
 
-		if (pdfFiles.length !== selectedFiles.length) {
-			alert("Only PDF files are allowed")
-		}
-
-		const newFilenames = pdfFiles.map((file) => file.name)
-
-		// Prevent duplicate filenames in the same section
-		setFiles((prev) => {
-			const existing = new Set(prev[field])
-			const uniqueNew = newFilenames.filter((name) => !existing.has(name))
-			return {
-				...prev,
-				[field]: [...prev[field], ...uniqueNew],
-			}
-		})
-
-		// ✅ Reset input to allow re-selection
-		if (e.target) {
-			e.target.value = ""
-		}
+const removeFile = (field: keyof typeof files, index: number) => {
+	setFiles((prev) => ({
+		...prev,
+		[field]: prev[field].filter((_, i) => i !== index),
+	}))
+	
+	// ✅ Reset input to allow re-uploading
+	if (fileInputRefs[field].current) {
+		fileInputRefs[field].current.value = ""
 	}
+}
 
-	const removeFile = (field: keyof typeof files, index: number) => {
-		setFiles((prev) => ({
-			...prev,
-			[field]: prev[field].filter((_, i) => i !== index),
-		}))
+const isProceedEnabled =
+files.letterhead.length > 0 &&
+files.receipt.length > 0 &&
+files.teller.length > 0
 
-		// ✅ Reset input to allow re-uploading
-		if (fileInputRefs[field].current) {
-			fileInputRefs[field].current.value = ""
-		}
-	}
 
-	const isProceedEnabled =
-		files.letterhead.length > 0 &&
-		files.receipt.length > 0 &&
-		files.teller.length > 0
-
-	return (
-		<VStack spacing={6} align="stretch">
+ useEffect(() => {
+    onDataChange?.({
+      letterhead: files.letterhead,
+      receipt: files.receipt,
+      teller: files.teller
+    });
+  }, [files, onDataChange]);
+return (
+	<VStack spacing={6} align="stretch">
 			{/* Section 1: Original reversal request letter */}
 			<Box>
 				<Text fontSize="14px" fontWeight="400" color="#121524" mb={2}>
@@ -290,7 +310,8 @@ const UploadCpcForm2 = () => {
 				type="button"
 				spinnerColor="white"
 				fontSize="14px"
-				isDisabled={!isProceedEnabled}>
+				isDisabled={!isProceedEnabled}
+				 onClick={onNext} >
 				Proceed
 			</Buttons>
 		</VStack>
