@@ -1,4 +1,5 @@
 export class pageLinks {
+  static readonly guid = "/guid";
   static readonly Dashboard = "/overView";
   static readonly Overview = "/overView";
   static readonly Reports = "/reports";

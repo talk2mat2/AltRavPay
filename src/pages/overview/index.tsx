@@ -17,9 +17,12 @@ import { FiUpload } from "react-icons/fi";
 import Buttons from "@/components/buttons";
 import { BiBarChartAlt } from "react-icons/bi";
 import ReportForm from "@/components/reportForm";
+import { useNavigate } from "react-router-dom";
+import { pageLinks } from "@/services/pageLinks";
 
 const OverView = () => {
   const showReportForm = true;
+  const navigate = useNavigate();
   return (
     <Container maxW="container.xl" w="100%" px={{ base: 4, md: 6 }} py={8}>
       <HStack
@@ -27,7 +30,7 @@ const OverView = () => {
         spacing={10}
         flexDir={{ base: "column", lg: "row" }}
         // justify={showReportForm ? "flex-start" : "center"}
-		justifyContent={"center"}
+        justifyContent={"center"}
       >
         <Box w="100%" maxW="515px" flexShrink={0}>
           <Heading
@@ -89,10 +92,12 @@ const OverView = () => {
                 <Text fontSize="28px" fontWeight="700" color="blue.500">
                   2345
                 </Text>
-
                 <Buttons
                   borderRadius="30px"
                   w="100%"
+                  onClick={() => {
+                    navigate(pageLinks.guid);
+                  }}
                   maxW="194px"
                   h={"32px"}
                   mt={6}
@@ -243,7 +248,7 @@ const OverView = () => {
           </Grid>
         </Box>
         {showReportForm && (
-          <Box  flex="0.8">
+          <Box flex="0.8">
             <ReportForm />
           </Box>
         )}

@@ -37,7 +37,7 @@ const AppRoutes = () => {
   // useIdleTimer(300000); // 5 minutes
 
   const renderRouteForRole = () => {
-    if (!isLoggedIn) {
+    if (isLoggedIn) {
       return NonAuthRoute();
     } else return DefaultAdminRoute();
   };
