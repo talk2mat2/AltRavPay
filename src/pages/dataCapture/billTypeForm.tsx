@@ -1,41 +1,32 @@
-import Buttons from "@/components/buttons"
-import FormDate from "@/components/formDate"
-import FormInput from "@/components/formInput"
-import Selects from "@/components/selects"
-import TextInput from "@/components/textInput"
+import Buttons from "@/components/buttons";
+import FormDate from "@/components/formDate";
+import FormInput from "@/components/formInput";
+import Selects from "@/components/selects";
+import TextInput from "@/components/textInput";
 import {
-	Box,
-	Card,
-	CardBody,
-	Heading,
-	HStack,
-	Text,
-	VStack,
-} from "@chakra-ui/react"
+  Box,
+  Button,
+  Card,
+  CardBody,
+  Heading,
+  HStack,
+  Input,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 
-import { Formik, Form } from "formik"
+import { Formik, Form } from "formik";
 
-const Web_id_form2 = ({ handleNext }: { handleNext: () => void }) => {
+
+const BillTypeForm = ({ handleNext }: { handleNext: () => void }) => {
 	return (
 		<>
-			<Heading
-				fontSize={{ base: "13px", md: "16px" }}
-				fontWeight="500"
-				textAlign="center">
-				The Web GUID for <b>“C-1251462”</b> is
-			</Heading>
-			<Heading
-				fontSize={{ base: "13px", md: "18px" }}
-				fontWeight="500"
-				textAlign="center"
-				color={"#009CBD"}>
-				27392729-2839103-162
-			</Heading>
-
 			<Formik
 				initialValues={{
 					transactionDate: "",
 					billType: "",
+					tellerPayerId: "",
 				}}
 				onSubmit={() => {}}>
 				{({ handleChange, handleBlur }) => (
@@ -65,6 +56,21 @@ const Web_id_form2 = ({ handleNext }: { handleNext: () => void }) => {
 								placeholder="--Select bill type--"
 								onChange={handleChange}
 								onBlur={handleBlur}
+							/>
+						</Box>
+
+						<Box mb={{ base: 3, md: "24px" }}>
+							<Text
+								fontSize={{ base: "13px", md: "14px" }}
+								mb={2}
+								fontWeight="400">
+								Teller Payer ID
+							</Text>
+							<TextInput
+								placeholder="Enter teller payer ID"
+								name="tellerPayerId"
+								onChange={handleChange}
+								label={""}
 							/>
 						</Box>
 
@@ -106,7 +112,7 @@ const Web_id_form2 = ({ handleNext }: { handleNext: () => void }) => {
 								type="submit"
 								spinnerColor="black"
 								fontSize={{ sm: "14px", md: "16px" }}>
-								Generate Report
+								Validate
 							</Buttons>
 						</HStack>
 					</Form>
@@ -114,6 +120,6 @@ const Web_id_form2 = ({ handleNext }: { handleNext: () => void }) => {
 			</Formik>
 		</>
 	)
-}
+};
 
-export default Web_id_form2
+export default BillTypeForm;

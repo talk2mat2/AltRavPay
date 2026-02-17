@@ -134,6 +134,9 @@ const OverView = () => {
 
 								<Buttons
 									borderRadius="30px"
+									onClick={() => {
+										navigate(pageLinks.dataCapture)
+									}}
 									w="100%"
 									maxW="194px"
 									h={"32px"}
