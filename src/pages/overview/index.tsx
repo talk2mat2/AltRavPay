@@ -190,13 +190,13 @@ const OverView = () => {
 									type="submit"
 									spinnerColor="black"
 									fontSize={{ sm: "14px", md: "16px" }}>
-									Upload Request
+									Download Receipt
 								</Buttons>
 							</Box>
 						</GridItem>
 
 						{/* CPC Documents Card */}
-						<GridItem>
+						{/* <GridItem>
 							<Box
 								borderWidth="1px"
 								borderColor="#CED4DA"
@@ -238,14 +238,14 @@ const OverView = () => {
 									Upload Document
 								</Buttons>
 							</Box>
-						</GridItem>
+						</GridItem> */}
 					</Grid>
 				</Box>
-				{showReportForm && (
+				{/* {showReportForm && (
 					<Box flex="0.8">
 						<ReportForm />
 					</Box>
-				)}
+				)} */}
 			</HStack>
 		</Container>
 	)
