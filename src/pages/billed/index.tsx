@@ -17,7 +17,7 @@ import Web_id_form from "./web_id_form";
 import Web_id_form2 from "./Web_id_form2";
 import Web_id_form3 from "./Web_id_form3";
 
-export default function GenerateWebGuid() {
+export default function BilledPayment() {
   const [step, setStep] = useState(0);
   const [payerId, setPayerId] = useState("");
 
@@ -33,7 +33,15 @@ export default function GenerateWebGuid() {
   };
 
   return (
-    <Box display={"flex"} flexDirection={"column"} alignItems={"center"} minH="100vh" bg="gray.100" pt={{ base: 16, md: 14 }} px={6}>
+    <Box
+      display={"flex"}
+      flexDirection={"column"}
+      alignItems={"center"}
+      minH="100vh"
+      bg="gray.100"
+      pt={{ base: 16, md: 14 }}
+      px={6}
+    >
       <Card transition="all 0.25s ease" w="520px" shadow="lg" borderRadius="xl">
         <CardBody p={10}>
           <VStack spacing={8} align="stretch">
@@ -42,10 +50,10 @@ export default function GenerateWebGuid() {
               fontWeight="500"
               textAlign="center"
             >
-              Generate WebGUID
+              Billed Payment
             </Heading>
 
-            <Stepper totalSteps={5} currentStep={step} />
+            <Stepper totalSteps={2} currentStep={step} />
             {step == 0 && (
               <>
                 <Box>
@@ -54,10 +62,10 @@ export default function GenerateWebGuid() {
                     mb={2}
                     fontWeight="300"
                   >
-                    Customer Payer ID
+                    Customer WebGuid
                   </Text>
                   <TextInput
-                    placeholder="Enter customer payer ID"
+                    placeholder="Enter customer WebGuid "
                     value={payerId}
                     onChange={(e) => setPayerId(e)}
                     label={""}

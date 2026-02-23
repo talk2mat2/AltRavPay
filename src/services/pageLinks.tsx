@@ -6,6 +6,8 @@ export class pageLinks {
 	static readonly Users = "/users"
 	static readonly NewUsers = "/users/new"
 	static readonly guid = "/guid"
+	static readonly overView = "/overView"
+	static readonly BilledPayment = "/BilledPayment"
 	static readonly dataCapture = "/data-capture"
 	static readonly Dashboard = "/overView"
 	static readonly Overview = "/overView"

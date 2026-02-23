@@ -65,14 +65,16 @@ const NavBar = () => {
               </Text>
             </Text>
           </VStack> */}
-          <Heading
-            color="gray.200"
-            fontSize={["17px", "24px"]}
-            textAlign="center"
-            fontWeight="700"
-          >
-            Alt RavPay
-          </Heading>
+          <a href="/">
+            <Heading
+              color="gray.200"
+              fontSize={["17px", "24px"]}
+              textAlign="center"
+              fontWeight="700"
+            >
+              Alt RavPay
+            </Heading>
+          </a>
         </HStack>
         <Menu placement="bottom-end">
           <HStack cursor="pointer">
