@@ -1,9 +1,12 @@
 import axios from "axios";
 import appConfig from "./config";
 
-import { encryptPayload, decryptPayload } from "./crypto";
+// import { encryptPayload, decryptPayload } from "./crypto";
 import { asyncGetItem } from "@/utils/helpers";
-import { serviceLinks } from "./serviceLinks";
+import { pageLinks } from "./pageLinks";
+import { serviceLinks } from "@/serviceLinks";
+import { decryptResponse, encryptRequest } from "./crypto";
+export const baseUrl = import.meta.env.VITE_ADMIN_BASE_URL;
 
 let isRefreshing = false;
 let failedQueue: ((token: string | null) => void)[] = [];
@@ -13,11 +16,9 @@ const processQueue = (token: string | null) => {
   failedQueue = [];
 };
 
-
-
 export const axiosInstance = (
   hash: string,
-  headers?: Record<string, string>
+  headers?: Record<string, string>,
 ) => {
   const instance = axios.create({
     headers: {
@@ -26,10 +27,10 @@ export const axiosInstance = (
       "Content-Type": "application/json",
       ...headers,
     },
+    baseURL: baseUrl,
   });
   // Axios global configs
   instance.interceptors.request.use(async function (config) {
-
     const isFileUpload = config.data instanceof FormData;
     const skipEncryption = config.headers["X-Skip-Encryption"] === "true";
 
@@ -46,7 +47,7 @@ export const axiosInstance = (
       !skipEncryption
     ) {
       try {
-        config.data = { data: encryptPayload(config.data) };
+        config.data = { data: encryptRequest(config.data) };
       } catch (error) {
         console.error("Request encryption failed:", error);
         return Promise.reject(new Error("Failed to encrypt request data."));
@@ -55,9 +56,8 @@ export const axiosInstance = (
 
     if (config.params && config.method?.toLowerCase() === "get") {
       try {
-        const encryptedParams = encryptPayload(config.params);
+        const encryptedParams = encryptRequest(config.params);
         config.params = { Data: encryptedParams };
-        
       } catch (error) {
         return Promise.reject(new Error("Failed to encrypt query params."));
       }
@@ -69,12 +69,12 @@ export const axiosInstance = (
   instance.interceptors.response.use(
     function (res: any) {
       let data = res.data;
-      
+
       // Decrypt if it's a string (likely encrypted)
-      if (typeof data === 'string') {
-        const decrypted = decryptPayload(data);
+      if (typeof data === "string") {
+        const decrypted = decryptResponse(data);
         if (decrypted) {
-            res.data = decrypted;
+          res.data = decrypted;
         }
       }
 
@@ -82,6 +82,8 @@ export const axiosInstance = (
     },
 
     async function (error) {
+      console.log(error);
+      console.log(error?.response);
       if (error.response) {
         const KEY = appConfig.encryptionKEY;
         const IV = appConfig.encryptionIV;
@@ -127,49 +129,53 @@ export const axiosInstance = (
               accessToken: token,
               refreshToken: refreshToken,
             };
-            
+
             // Use a clean axios instance to avoid interceptor loops
-            const response = await axios.post(serviceLinks.refreshToken, payload, {
+            const response = await axios.post(
+              serviceLinks.refreshToken,
+              payload,
+              {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-         
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              },
+            );
+
             let resData = response.data;
-            
+
             // Check if we need to decrypt
-            if (typeof resData === 'string') {
-                 const decrypted = decryptPayload(resData);
-                 if (decrypted) {
-                    resData = decrypted;
-                 }
+            if (typeof resData === "string") {
+              const decrypted = decryptResponse(resData);
+              if (decrypted) {
+                resData = decrypted;
+              }
             }
 
             const newAccessToken = resData?.Data?.Token || resData?.Token;
-            const newRefreshToken = resData?.Data?.RefreshToken || resData?.RefreshToken;
+            const newRefreshToken =
+              resData?.Data?.RefreshToken || resData?.RefreshToken;
 
             if (newAccessToken) {
-                // Store the new tokens
-                localStorage.setItem("token", newAccessToken);
-                if (newRefreshToken) {
-                    localStorage.setItem("refreshToken", newRefreshToken);
-                }
+              // Store the new tokens
+              localStorage.setItem("token", newAccessToken);
+              if (newRefreshToken) {
+                localStorage.setItem("refreshToken", newRefreshToken);
+              }
 
-                // Update the authorization header
-                axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+              // Update the authorization header
+              axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-                processQueue(newAccessToken);
-                
-                // Re-create the axios instance or just retry with the new token
-                // We return axios(originalRequest) which effectively uses the global axios or we should use axiosInstance
-                // But originalRequest already has the config.
-                return axiosInstance(newAccessToken)(originalRequest);
+              processQueue(newAccessToken);
+
+              // Re-create the axios instance or just retry with the new token
+              // We return axios(originalRequest) which effectively uses the global axios or we should use axiosInstance
+              // But originalRequest already has the config.
+              return axiosInstance(newAccessToken)(originalRequest);
             } else {
-                throw new Error("No token returned");
+              throw new Error("No token returned");
             }
-
           } catch (refreshError) {
             processQueue(null);
             window.location.href = "/logout";
@@ -180,18 +186,18 @@ export const axiosInstance = (
         }
 
         // Decrypt the data if possible
-        if (typeof data === 'string') {
-             const decrypted = decryptPayload(data);
-             if (decrypted) {
-                return Promise.reject(decrypted);
-             }
+        if (typeof data === "string") {
+          const decrypted = decryptResponse(data);
+          if (decrypted) {
+            return Promise.reject(decrypted);
+          }
         }
         return Promise.reject(error);
       }
 
       // If no response, return the original error
       return Promise.reject(error);
-    }
+    },
   );
   return instance;
 };

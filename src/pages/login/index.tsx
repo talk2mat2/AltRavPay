@@ -34,6 +34,8 @@ import Buttons from "@/components/buttons";
 // import { useMutation } from "@tanstack/react-query";
 // import type { IILoginValues } from "@/interface/IloginValues";
 import { api } from "@/services/api";
+import { useMutation } from "@tanstack/react-query";
+import { serviceLinks } from "@/serviceLinks";
 
 const backgroundImages = [bg1, bg2, bg3];
 
@@ -56,6 +58,25 @@ const Login = () => {
   // const handleSubmit = (values: any) => {
   //   setIsLoading(true);
   // };
+
+  const { mutate, status } = useMutation({
+    mutationFn: (formData: any) => {
+      setEmail(formData?.Email);
+      return api.login(formData);
+    },
+    mutationKey: [serviceLinks.login],
+    onSuccess: (response: any) => {
+      setIsLoading(false);
+      console.log(response)
+      // if (response?.Success == true) {
+      //   setShowTokenForm(true);
+      // } else [toast.error(response || "Login error occured")];
+    },
+    onError: (res) => {
+      setIsLoading(false);
+      toast.error(res.message || "Login error occured");
+    },
+  });
 
   return (
     <Box
@@ -108,7 +129,7 @@ const Login = () => {
                   passWord: "",
                 }}
                 onSubmit={(values: any) => {
-                  // handleSubmit(values);
+                  mutate(values);
                 }}
               >
                 {({
