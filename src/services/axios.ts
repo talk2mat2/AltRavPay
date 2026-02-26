@@ -30,39 +30,23 @@ export const axiosInstance = (
     baseURL: baseUrl,
   });
   // Axios global configs
-  instance.interceptors.request.use(async function (config) {
+  instance.interceptors.request.use(async (config) => {
+    const method = config.method?.toLowerCase();
     const isFileUpload = config.data instanceof FormData;
-    const skipEncryption = config.headers["X-Skip-Encryption"] === "true";
+    const skipEncryption = config.headers?.["X-Skip-Encryption"] === "true";
 
     if (isFileUpload) {
       delete config.headers["Content-Type"];
-    } else {
-      config.headers["Content-Type"] = "application/json";
+      return config;
     }
 
-    if (
-      config.data &&
-      ["post", "put", "patch"].includes(config.method as string) &&
-      !isFileUpload &&
-      !skipEncryption
-    ) {
-      try {
-        config.data = { data: encryptRequest(config.data) };
-      } catch (error) {
-        console.error("Request encryption failed:", error);
-        return Promise.reject(new Error("Failed to encrypt request data."));
-      }
-    }
+    config.headers["Content-Type"] = "application/json";
 
-    if (config.params && config.method?.toLowerCase() === "get") {
-      try {
-        const encryptedParams = encryptRequest(config.params);
-        config.params = { Data: encryptedParams };
-      } catch (error) {
-        return Promise.reject(new Error("Failed to encrypt query params."));
-      }
+    if (method === "post" && config.data && !skipEncryption) {
+      console.log("Encrypting once...");
+      config.data = await encryptRequest(config.data);
     }
-
+    config.transformRequest = [(data) => data];
     return config;
   });
 
@@ -84,10 +68,9 @@ export const axiosInstance = (
     async function (error) {
       console.log(error);
       console.log(error?.response);
+      // const deError = await decryptResponse(error?.response?.data);
+      // console.log({ decryptResponse: deError });
       if (error.response) {
-        const KEY = appConfig.encryptionKEY;
-        const IV = appConfig.encryptionIV;
-
         const data = error.response.data;
 
         // Session invalidation logic

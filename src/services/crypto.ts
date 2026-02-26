@@ -22,29 +22,19 @@ export const encrypt = async (data: any) => {
 };
 
 export const encryptRequest = async (request: any) => {
-  // var CryptoJS = require("crypto-js");
-  // console.log(request);
-
-  // var keyClass = new VerificationKeys();
-
-  var key = PBKDF2(PassPhrase, Utf8.parse(SaltValue), {
+  const key = PBKDF2(PassPhrase, Utf8.parse(SaltValue), {
     keySize: 256 / Blocksize,
     iterations: PasswordIterations,
+    hasher: algo.SHA1, 
   });
-  var parsedIV = Utf8.parse(InitVector);
 
-  // Encrypt
-  // var encrypted = AES.encrypt(request, key, {
-  //   iv: parsedIV,
-  //   // mode: CryptoJS.mode.CFB,
-  //   // padding: CryptoJS.pad.AnsiX923
-  // }).toString();
+  const parsedIV = Utf8.parse(InitVector);
+
   const encrypted = AES.encrypt(JSON.stringify(request), key, {
     iv: parsedIV,
     padding: pad.Pkcs7,
     mode: mode.CBC,
   }).toString();
-
   return encrypted;
 };
 // Decryption Service

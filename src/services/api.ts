@@ -14,7 +14,7 @@ export const api = {
   login: async (payload: any) => {
     const hash = (await asyncGetItem("token")) || "";
     return axiosInstance(hash, undefined)
-      .get(serviceLinks.GetBillTypes, payload)
+      .post(serviceLinks.PayerIDVerification, payload)
       .then((res) => {
         return res.data;
       })
